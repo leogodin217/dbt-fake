@@ -19,10 +19,6 @@
 {% endset %}
 
 {% set date_records = run_query(date_sql) %}
-{% for date_record in date_records%}
-  {{log(date_record.values(), info=true)}}
-
-{% endfor %}
 {% set date_column = 0 %}
 {% set num_records_column = 1 %}
 {# Manually setting row_number for dates using a namespace value #}
@@ -38,8 +34,8 @@ with dates as (
             {% set row_number.value = row_number.value + 1 %}
         {% endfor %} 
     {% endfor %}
-     {# Loop.last is difficult with the nested loop  #}
-     select date('2023-01-01'), 1 as row_number limit {{ row_number.value }} 
+     {# Loop.last is difficult with the nested loop. We'll just put a row number that is very hight  #}
+     select date('2023-01-01'), 99999999999 as row_number limit {{ row_number.value }} 
 ),
 models as (
     select
@@ -64,7 +60,7 @@ select
         models.{{ column }},
     {% endfor %}
     dates.date as date_added
-from dates 
+from (select * from dates where row_number < 99999999999) as dates -- Remove the additional row added   
 inner join models 
     on models.row_number = dates.row_number
 {% endmacro %}
