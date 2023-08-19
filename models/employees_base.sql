@@ -1,4 +1,8 @@
+ -- depends_on: {{ ref('fake_companies') }}
  -- depends_on: {{ ref('fake_people') }}
+ -- depends_on: {{ ref('fake_dates') }}
+ -- depends_on: {{ ref('fake_numbers') }}
+
 {{
   config(
     materialized = 'incremental',
@@ -8,12 +12,14 @@
 }}
 
 {% set max_per_day = var('max_per_day', 10) %}
+{% set allow_zero = var('allow_zero', True) %}
 {% set start_date = get_default_start_date() %}
 {% set end_date = get_default_end_date() %}
 
 with people as (
 {{ generate_source_model_query(seed_name='fake_people', 
                                max_per_day = max_per_day, 
+                               allow_zero = allow_zero,
                                start_date = start_date, 
                                end_date = end_date, 
                                columns=['id', 'first_name', 'last_name', 'gender', 'email', 'age', 'username']
