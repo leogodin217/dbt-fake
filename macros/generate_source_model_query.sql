@@ -12,8 +12,9 @@ models as (
     {%- for column in columns %}
         {{ column }}, 
     {%- endfor %}
-    row_number() over (order by null) as row_num
+    row_number() over (order by rand()) as row_num
     from {{ ref(seed_name) }} as seed  
+    order by rand()
 
     {% if is_incremental() %}
         where not exists (

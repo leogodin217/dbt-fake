@@ -35,3 +35,11 @@ models:
     # Config indicated by + and applies to all files under models/example/
     staging:
       +materialized: view
+      +schema: sources
+    sources:
+      +materialized: view
+      +schema: sources
+
+seeds:
+  sources:
+    +schema: fake_source_seeds

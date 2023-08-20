@@ -3,10 +3,10 @@
  -- depends_on: {{ ref('fake_dates') }}
  -- depends_on: {{ ref('fake_numbers') }}
 
+{# No unique key because this is append only #}
 {{
   config(
     materialized = 'incremental',
-    unique_key = 'id',
     tags = ['base-table', 'employees']
     )
 }}
@@ -28,7 +28,9 @@ with people as (
 ),
 companies as (
   select 
-      id
+      id,
+      date_added,
+      rand() as company_order
   from {{ ref('companies_base') }}
 )
 select 
@@ -36,6 +38,7 @@ select
     companies.id as company_id
 from people 
 left join companies 
-    on 1 = 1
-qualify row_number() over (partition by people.id, people.date_added order by null) = 1
+    -- Only join to companies that existed on the fake date the employee was added
+    on companies.date_added <= people.date_added
+qualify row_number() over (partition by people.id order by rand()) = 1
 

@@ -2,10 +2,10 @@
  -- depends_on: {{ ref('fake_dates') }}
  -- depends_on: {{ ref('fake_numbers') }}
 
+{# No unique key, because this is append only #}
 {{
   config(
     materialized = 'incremental',
-    unique_key = 'id',
     tags = ['base-table', 'companies']
     )
 }}
