@@ -32,6 +32,14 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   dbt_fake_company:
-    # Config indicated by + and applies to all files under models/example/
-    example:
+    sources:
       +materialized: view
+      +schema: sources
+    validation:
+      +materialized: view
+      +enabled: "{{ var('run_validation', false) }}"
+
+seeds:
+  dbt_fake_company:
+    sources:
+      +schema: source_seeds

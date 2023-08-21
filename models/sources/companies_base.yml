@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: companies_base
+    description: List of companies with new companies added over time. Intended to mimic a live database source with no change tracking.
+    columns:
+      - name: id
+        description: PK - ID of the company
+        tests:
+          - unique
+          - not_null  
+      - name: name 
+        description: Name of the company
+      - name: slogan 
+        description: Hopefully-funny slogan of the company
+      - name: purpose 
+        description: Hopefully-funny purpose of the company (Like a short mission statement) 
+      - name: date_added 
+        description: Fake date the company was first added. Exists to help in troubleshooting. Ignore this to fully mimic a live DB with no change tracking.
