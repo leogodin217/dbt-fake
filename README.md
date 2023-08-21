@@ -9,6 +9,7 @@ companies and employees each day, but existing records will never change. Future
 - Macros to randomly change existing dimensional records
 - Macros to introduce data-quality errors that will require fixing. 
 - Cross-database support (Currently only works on Bigquery)
+- Better code validation (Using multiple methods to demonstrate possibilities)
 
 
 ### Generating Fake Data 
@@ -23,7 +24,7 @@ All models support the following optional arguments
 - start_date - default current_date() - 1 
 - end_date - default current_date() - 1
 - max_per_day - default 3 for companies, 10 for employees
-- allow_zero - default false. True allows a day to have 0 records.
+- allow_zero - default true. True allows a day to have 0 records.
 - dbt build -s tag:base-table --vars '{start_date: "some_date", end_date: "some_date", max_per_day: some_number, allow_zero: true|false}'
 
 example: Create records starting 2023-01-01 and ending 2023-08-20. 0-3 companies, 0-10 employees \
