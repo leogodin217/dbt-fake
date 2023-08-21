@@ -14,7 +14,6 @@ models as (
     {%- endfor %}
     row_number() over (order by rand()) as row_num
     from {{ ref(seed_name) }} as seed  
-    order by rand()
 
     {% if is_incremental() %}
         where not exists (
@@ -24,6 +23,7 @@ models as (
             where seed.id = current_seed.id
         )
     {% endif %}
+    order by rand()
 )
 
 select 
