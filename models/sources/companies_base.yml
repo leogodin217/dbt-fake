@@ -8,6 +8,7 @@ models:
         description: PK - ID of the company
         tests:
           - unique
+          - not_null  
       - name: name 
         description: Name of the company
       - name: slogan 
@@ -15,4 +16,4 @@ models:
       - name: purpose 
         description: Hopefully-funny purpose of the company (Like a short mission statement) 
       - name: date_added 
-        description: Date the company was first added. Exists to help in troubleshooting. Ignore this to fully mimic a live DB with no change tracking.
+        description: Fake date the company was first added. Exists to help in troubleshooting. Ignore this to fully mimic a live DB with no change tracking.

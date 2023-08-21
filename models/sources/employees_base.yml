@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: employees_base
+    description: List of company employees with new rows added over time. Intended to mimic a live database with no change tracking. 
+    columns:
+      - name: id
+        description: PK - Id of the employee
+        tests:
+          - unique
+          - not_null
+      - name: company_id
+        description: FK - Id of the employee's company
+        tests: 
+          - relationships:
+              to: ref('companies_base')
+              field: id
+      - name: first_name
+        description: First name of the employee
+      - name: last_name
+        description: Last name of the employee
+      - name: gender
+        description: Gender of the employee. Male, female or other.
+      - name: email 
+        description: Email address of the employee
+      - name: age 
+        description: Age of the employee
+      - name: username 
+        description: Username of the employee 
+      - name: date_added 
+        description: Fake date the employee was first added. Exists to help in troubleshooting. Ignore this to fully mimic a live DB with no change tracking.
