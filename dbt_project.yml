@@ -35,9 +35,6 @@ models:
     sources:
       +materialized: view
       +schema: sources
-    validation:
-      +materialized: view
-      +enabled: "{{ var('run_validation', false) }}"
 
 seeds:
   dbt_fake_company:
