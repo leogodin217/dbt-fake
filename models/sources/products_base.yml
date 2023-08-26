@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: products_base
+    description: List of products with new products added over time. Intended to mimic a live database source with no change tracking.
+    columns:
+      - name: id
+        description: PK - ID of the product 
+        tests:
+          - unique
+          - not_null  
+      - name: name 
+        description: Often-funny name of the product
+      - name: category 
+        description: Category of the product 
+      - name: price 
+        description: Price of the product 
+      - name: date_added 
+        description: Fake date the product was first added. Exists to help in troubleshooting. Ignore this to fully mimic a live DB with no change tracking.

@@ -1,11 +1,12 @@
 One of the most difficult tasks when learning DBT is finding good datasets that update over time. This
 project uses DBT to generate fake data that will update daily. With simple commands, we can generate a history of data.
-Then, we can update the data each day to mimic a real company.  
+Then, we can update the data each day to mimic a real company. This data is enough to practice incremental tables and snapshots.
 
-This project is in early stages, with just two tables; companies_base and employees_base. Right now, we can add new
-companies and employees each day, but existing records will never change. Future enhancements will include: 
 
-- Additional models for products, orders, and something marketing related. Maybe email campaigns or Google ads. 
+This project is in early stages, with just three tables; companies_base, employees_base and enterprise_orders_base. 
+Right now, we can add new records each day, but existing records will never change. Future enhancements will include: 
+
+- Additional models for public customers and orders, tiered pricing, and something marketing related. Maybe email campaigns or Google ads. 
 - Macros to randomly change existing dimensional records
 - Macros to introduce data-quality errors that will require fixing. 
 - Cross-database support (Currently only works on Bigquery)
@@ -36,6 +37,9 @@ dbt build -s tag:base-table --vars '{start_date: "2023-01-01", end_date: "2023-0
 example: Create company records for 2023-01-01 and ending 2023-08-20, 1-20 employees per day \
 dbt build -s employees_base --vars '{start_date: "2023-01-01", end_date: "2023-08-20", num_records: 20, allow_zero: false}'
 
+example: Create a ton of orders around Christmas time
+dbt build -s enterprise_orders_base --vars '{start_date: "2022-12-15", end_date: "2022-12-21", num_records: 50, allow_zero: false}'
+
 **Load daily records:**
 
 example: Create records for yesterday. 0-3 companies, 0-10 employees \
@@ -57,16 +61,38 @@ Once you understand the basics. Get this project running in your own environment
 
 In general, the output tables are intended to be sources in another project. A good practice is to keep this project completely
 separate and create a sources.yml in your own project. With this method, you can still modify this project if the output data
-does not meet your needs.  
+does not meet your needs. That being said, you own your own learning journey, use this project however you see fit.  
 
 To see documentation on each table, look in *_base.yml or run:
 - dbt docs generate
 - dbt docs serve
 
+**Challenges to Get Started**
+- Use snapshots to create SCD type-2 dimensions for companies and customers
+- Separate enterprise_orders_base into categories and products tables
+- Create a view that generates invoices for all orders
+- Create a seed with company ids and discounts (maybe as percentages), apply those discounts to invoices. 
+- Imagine a custom called in to get special pricing for specific items? How would you override prices?
+- Delete a random company, but leave the employees. How would you handle that situation where employees have no company? 
 
-### Resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [chat](https://community.getdbt.com/) on Slack for live discussions and support
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
+
+### How data was created:
+
+In order to generate daily-updated records, we need a generic source of records to pull from. 
+In this case we used Python and [Faker](https://faker.readthedocs.io/en/master/). Faker makes
+it easy to generate random entities, with often-funny results, like a "canned tuna" product under
+the childrens category. 
+
+For each entity, we generated 10,000 random rows in a CSV file. These CSV
+files are loaded as seeds by DBT. From there, we use SQL with a whole lot of inefficent queries
+and rand(). Fake_dates and fake_numbers exist to make the queries a little more efficient.  
+
+
+
+![DBT DAG with seeds](resources/dag_with_seeds.png)
+
+To see the code, run scripts/generate_fake_entities.ipynb using Jupyter. To run the code, you will need to install Faker and [faker-commerce](https://github.com/nicobritos/python-faker-commerce). 
+
+```
+pip install faker faker-commerce
+```

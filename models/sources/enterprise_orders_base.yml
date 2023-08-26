@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: enterprise_orders_base
+    description: List of orders made by company employees
+    columns:
+      - name: employee_id 
+        description: ID of the employee who made the order
+        tests:
+          - relationships:
+              field: id
+              to: ref('employees_base')
+      - name: product_id 
+        description: ID of the product ordered 
+        tests:
+          - relationships:
+              field: id
+              to: ref('products_base')
+      - name: date 
+        description: Date of the order

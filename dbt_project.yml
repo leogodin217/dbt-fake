@@ -35,11 +35,10 @@ models:
     sources:
       +materialized: view
       +schema: sources
-    validation:
-      +materialized: view
-      +enabled: "{{ var('run_validation', false) }}"
 
 seeds:
   dbt_fake_company:
     sources:
       +schema: source_seeds
+      +docs:
+        node_color: "#CF4647" 
