@@ -2,7 +2,6 @@ One of the most difficult tasks when learning DBT is finding good datasets that 
 project uses DBT to generate fake data that will update daily. With simple commands, we can generate a history of data.
 Then, we can update the data each day to mimic a real company. This data is enough to practice incremental tables and snapshots.
 
-
 This project is in early stages, with just three tables; companies_base, employees_base and enterprise_orders_base. 
 Right now, we can add new records each day, but existing records will never change. Future enhancements will include: 
 
@@ -68,12 +67,17 @@ To see documentation on each table, look in *_base.yml or run:
 - dbt docs serve
 
 **Challenges to Get Started**
+- Create a history of companies, employees and orders
+- Add more orders for specific date ranges to show increased activity
+- Configure this project to run in DBT Cloud, Airflow, Github Actions, or any orchestrator (Update data daily)
+- Create a new project and add the tables created by this project as source
 - Use snapshots to create SCD type-2 dimensions for companies and customers
 - Separate enterprise_orders_base into categories and products tables
 - Create a view that generates invoices for all orders
-- Create a seed with company ids and discounts (maybe as percentages), apply those discounts to invoices. 
+- Create a seed with company ids and discounts (maybe as percentages), apply those discounts to invoices
 - Imagine a custom called in to get special pricing for specific items? How would you override prices?
 - Delete a random company, but leave the employees. How would you handle that situation where employees have no company? 
+- Use a different database for this project. It will fail. Try to fix it. 
 
 
 ### How data was created:
