@@ -43,3 +43,5 @@ seeds:
   dbt_fake_company:
     sources:
       +schema: source_seeds
+      +docs:
+        node_color: "#CF4647" 
