@@ -8,7 +8,7 @@
             date,
             cast(
                 floor(
-                    rand() * {% if allow_zero %} ({{ max_per_day }} + 1) {% else %} {{ max_per_day }} + 1  {% endif %}
+                    {{ xdb_random() }} * {% if allow_zero %} ({{ max_per_day }} + 1) {% else %} {{ max_per_day }} + 1  {% endif %}
                 )
             as int) as num_records
         from {{ ref('fake_dates') }} 

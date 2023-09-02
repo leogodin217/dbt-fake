@@ -26,7 +26,7 @@ products as (
     from dates 
     left join {{ ref('products_base') }} as products 
         on products.date_added <= dates.date
-    qualify row_number() over (partition by dates.row_num order by rand()) = 1
+    qualify row_number() over (partition by dates.row_num order by {{ xdb_random() }}) = 1
 ),
 employees as (
     select 
@@ -36,7 +36,7 @@ employees as (
     from dates 
     left join {{ ref('employees_base') }} as employees 
         on employees.date_added <= dates.date
-    qualify row_number() over (partition by dates.row_num order by rand()) = 1
+    qualify row_number() over (partition by dates.row_num order by {{ xdb_random() }}) = 1
 )
 
 select 
@@ -45,7 +45,7 @@ select
     products.product_id,
     cast(
         floor(
-            (rand() * 10) + 1 -- 1 - 10 products
+            ({{ xdb_random() }} * 10) + 1 -- 1 - 10 products
         )
     as int) as num_items
 from employees 
