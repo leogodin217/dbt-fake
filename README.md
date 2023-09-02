@@ -5,10 +5,12 @@ Then, we can update the data each day to mimic a real company. This data is enou
 This project is in early stages, with just three tables; companies_base, employees_base and enterprise_orders_base. 
 Right now, we can add new records each day, but existing records will never change. Future enhancements will include: 
 
+This should work on most databases. See macros/xdb_random.sql to see how the random macro is applied in various dbs. If it 
+does not work for a specific database, please open an issue. 
+
 - Additional models for public customers and orders, tiered pricing, and something marketing related. Maybe email campaigns or Google ads. 
 - Macros to randomly change existing dimensional records
 - Macros to introduce data-quality errors that will require fixing. 
-- Cross-database support (Currently only works on Bigquery)
 - Better code validation (Using multiple methods to demonstrate possibilities)
 
 
