@@ -1,0 +1,111 @@
+# Thanks Siva Nadesan https://www.entechlog.com/blog/data/how-to-host-dbt-docs/
+name: "dbt prd pipeline"
+
+# Triggers
+on:
+  # Triggers the workflow on push to main branch
+  push:
+  branches:
+    - main
+  # Triggers the workflow manually from GUI
+  workflow_dispatch:
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    environment: prd
+    # env:
+    #   ENV_CODE: ${{vars.ENV_CODE}}
+    #   PROJ_CODE: ${{vars.PROJ_CODE}}
+    #   SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
+    #   SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
+    env:
+      DBT_PROFILES_DIR: ./.profiles/bigquery/
+
+      DBT_GOOGLE_PROJECT_PROD: ${{ secrets.DBT_GOOGLE_PROJECT_PROD }}
+      DBT_GOOGLE_BIGQUERY_DATASET_PROD: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
+      # The DBT_GOOGLE_BIGQUERY_KEYFILE_PROD secret will be written to a json file below
+      DBT_GOOGLE_BIGQUERY_KEYFILE_PROD: ./dbt-service-account.json
+  
+
+    steps:
+      - name: "Step 01 - Checkout current branch"
+        id: step-01
+        uses: actions/checkout@v3
+
+      - name: "Step 2 - Create service account file" 
+        id: step-02
+        run: 'echo "$KEYFILE" > ./dbt-service-account.json'
+        shell: bash
+        env:
+            KEYFILE: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE_PROD}}
+
+      - name: "Step 03 - Install dbt"
+        id: step-03
+        run: pip3 install dbt-bigquery
+
+      - name: "Step 04 - Verify dbt"
+        id: step-04
+        run: dbt --version
+
+      - name: "Step 05 - Compile dbt"
+        id: step-05
+        working-directory: ./dbt-docs/dbt
+        run: |
+          ls -ltra
+          export DBT_PROFILES_DIR=$PWD
+          dbt deps
+          dbt debug -t prod 
+          dbt compile -t prod 
+
+      - name: "Step 06 - Generate dbt docs"
+        id: step-06
+        working-directory: ./dbt-docs/dbt
+        run: |
+          # export DBT_PROFILES_DIR=$PWD
+          dbt deps
+          dbt docs generate -t prod 
+          cd target
+          mkdir ${{ github.workspace }}/docs
+          cp *.json *.html graph.gpickle ${{ github.workspace }}/docs
+          ls -ltra ${{ github.workspace }}/docs
+
+      - name: "Step 07 - Upload pages to artifact"
+        id: step-07
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ${{ github.workspace }}/docs
+
+      - name: "Step 08 - Zip artifact"
+        id: step-08
+        run: zip -jrq docs.zip ${{ github.workspace }}/docs
+
+      - name: "Step 09 - Upload artifact for deployment job"
+        id: step-09
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: docs.zip
+
+  # Deploy to Github pages
+  deploy-to-github-pages:
+    # Add a dependency to the build job
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
