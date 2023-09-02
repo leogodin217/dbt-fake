@@ -5,8 +5,8 @@ name: "dbt prd pipeline"
 on:
   # Triggers the workflow on push to main branch
   push:
-  branches:
-    - main
+    branches:
+      - main
   # Triggers the workflow manually from GUI
   workflow_dispatch:
 
