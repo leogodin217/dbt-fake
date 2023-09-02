@@ -46,7 +46,7 @@ jobs:
 
       - name: "Step 05 - Compile dbt"
         id: step-05
-        working-directory: ./dbt-docs/dbt
+        # working-directory: ./dbt-docs/dbt
         run: |
           ls -ltra
           # export DBT_PROFILES_DIR=$PWD
@@ -56,9 +56,8 @@ jobs:
 
       - name: "Step 06 - Generate dbt docs"
         id: step-06
-        working-directory: ./dbt-docs/dbt
+        # working-directory: ./dbt-docs/dbt
         run: |
-          # export DBT_PROFILES_DIR=$PWD
           dbt deps
           dbt docs generate -t prod 
           cd target
