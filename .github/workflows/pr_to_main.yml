@@ -5,7 +5,7 @@ on:
     branches:
       - main
 env:
-  DBT_PROFILES_DIR: ./
+  DBT_PROFILES_DIR: ./profiles/bigquery/
 
   DBT_GOOGLE_PROJECT_DEV: ${{ secrets.DBT_GOOGLE_PROJECT_DEV }}
   DBT_GOOGLE_BIGQUERY_DATASET_DEV: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_DEV }}

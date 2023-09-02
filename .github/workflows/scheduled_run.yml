@@ -5,7 +5,7 @@ on:
   schedule:
     - cron:  '0 2 * * *'
 env:
-  DBT_PROFILES_DIR: ./
+  DBT_PROFILES_DIR: ./profiles/bigquery/
 
   DBT_GOOGLE_PROJECT_PROD: ${{ secrets.DBT_GOOGLE_PROJECT_PROD }}
   DBT_GOOGLE_BIGQUERY_DATASET_PROD: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
