@@ -12,7 +12,7 @@ models as (
     {%- for column in columns %}
         {{ column }}, 
     {%- endfor %}
-    row_number() over (order by rand()) as row_num
+    row_number() over (order by {{ xdb_random() }}) as row_num
     from {{ ref(seed_name) }} as seed  
 
     {% if is_incremental() %}
@@ -23,7 +23,7 @@ models as (
             where seed.id = current_seed.id
         )
     {% endif %}
-    order by rand()
+    order by {{ xdb_random() }}
 )
 
 select 

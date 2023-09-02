@@ -30,7 +30,7 @@ companies as (
   select 
       id,
       date_added,
-      rand() as company_order
+      {{ xdb_random() }} as company_order
   from {{ ref('companies_base') }}
 )
 select 
@@ -40,5 +40,5 @@ from people
 left join companies 
     -- Only join to companies that existed on the fake date the employee was added
     on companies.date_added <= people.date_added
-qualify row_number() over (partition by people.id order by rand()) = 1
+qualify row_number() over (partition by people.id order by {{ xdb_random() }}) = 1
 

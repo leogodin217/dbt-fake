@@ -1,0 +1,41 @@
+name: pr_to_main
+
+on:
+  pull_request:
+    branches:
+      - main
+env:
+  DBT_PROFILES_DIR: ./.profiles/bigquery/
+
+  DBT_GOOGLE_PROJECT_DEV: ${{ secrets.DBT_GOOGLE_PROJECT_DEV }}
+  DBT_GOOGLE_BIGQUERY_DATASET_DEV: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_DEV }}
+  # The DBT_GOOGLE_BIGQUERY_KEYFILE_DEV secret will be written to a json file below
+  DBT_GOOGLE_BIGQUERY_KEYFILE_DEV: ./dbt-service-account.json
+
+jobs:
+  pr_to_main:
+    name: pr_to_main
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@main
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.11.x"
+
+      - name: Authenticate using service account
+        run: 'echo "$KEYFILE" > ./dbt-service-account.json'
+        shell: bash
+        env:
+          KEYFILE: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE_DEV}}
+
+      - name: Install dependencies
+        run: |
+          pip install dbt-bigquery
+          dbt deps
+      
+      # Add dbt seed or other commands here if needed
+      - name: Run dbt models
+        run: dbt build 
