@@ -7,7 +7,7 @@
 {% if 'current_date()' in end_date %}
     {{ return(end_date) }}
 {% else %}
-    {{ return("date('" + end_date + "')") }}
+    {{ return("'" + end_date + "'") }}
 {% endif %}
 
 {% endmacro %}
