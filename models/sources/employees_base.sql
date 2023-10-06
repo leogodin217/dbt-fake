@@ -40,5 +40,6 @@ from people
 left join companies 
     -- Only join to companies that existed on the fake date the employee was added
     on companies.date_added <= people.date_added
+where companies.id is not null -- In some cases, we have more employees than companies
 qualify row_number() over (partition by people.id order by {{ xdb_random() }}) = 1
 

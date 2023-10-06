@@ -48,9 +48,10 @@ select
             ({{ xdb_random() }} * 10) + 1 -- 1 - 10 products
         )
     as int) as num_items
-from employees 
-left join products 
+from products 
+left join employees 
     on employees.row_num = products.row_num 
+where employees.employee_id is not null -- Somtimes we have more products than employees
 
 
 
