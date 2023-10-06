@@ -7,12 +7,14 @@ models:
       - name: employee_id 
         description: ID of the employee who made the order
         tests:
+          - not_null
           - relationships:
               field: id
               to: ref('employees_base')
       - name: product_id 
         description: ID of the product ordered 
         tests:
+          - not_null
           - relationships:
               field: id
               to: ref('products_base')

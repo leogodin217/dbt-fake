@@ -12,6 +12,7 @@ models:
       - name: company_id
         description: FK - Id of the employee's company
         tests: 
+          - not_null
           - relationships:
               to: ref('companies_base')
               field: id
